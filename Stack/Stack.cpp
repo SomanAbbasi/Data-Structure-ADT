@@ -1,49 +1,96 @@
-#include <iostream>
+#pragma once
+
 #include <stdexcept>
 using namespace std;
-
 template <typename T>
 class Stack
 {
 private:
-    T *data;
+    T *stack;
     int capacity;
     int topIndex;
 
-public:
-    Stack(int cap)
+    void resize(int newCapacity)
     {
-        if (cap <= 0)
+        T *newData = new T[newCapacity];
+
+        for (int i = 0; i <= topIndex; ++i)
         {
-            throw std::invalid_argument("Capacity must be greater than 0");
+            newData[i] = stack[i];
         }
-        capacity = cap;
-        topIndex = -1;
-        data = new T[capacity];
+
+        delete[] stack;
+        stack = newData;
+        capacity = newCapacity;
+    }
+
+public:
+    Stack(int cap = 10000)
+        : capacity(cap), topIndex(-1)
+    {
+
+        if (capacity <= 0)
+        {
+            throw invalid_argument("Capacity must be positive");
+        }
+
+        stack = new T[capacity];
+    }
+
+    // Copy constructor
+    Stack(const Stack &other)
+        : capacity(other.capacity), topIndex(other.topIndex)
+    {
+
+        stack = new T[capacity];
+        for (int i = 0; i <= topIndex; ++i)
+        {
+            stack[i] = other.stack[i];
+        }
+    }
+
+    // Copy assignment
+    Stack &operator=(const Stack &other)
+    {
+        if (this == &other)
+            return *this;
+
+        delete[] stack;
+
+        capacity = other.capacity;
+        topIndex = other.topIndex;
+        stack = new T[capacity];
+
+        for (int i = 0; i <= topIndex; ++i)
+        {
+            stack[i] = other.stack[i];
+        }
+
+        return *this;
     }
 
     // Destructor
     ~Stack()
     {
-        delete[] data;
+        delete[] stack;
     }
 
     void push(const T &value)
     {
         if (isFull())
         {
-            throw overflow_error("Stack Overflow");
+            resize(capacity * 2); // expand
         }
-        data[++topIndex] = value;
+        stack[++topIndex] = value;
     }
 
-    T pop()
+    void pop()
     {
         if (isEmpty())
         {
             throw underflow_error("Stack Underflow");
         }
-        return data[topIndex--];
+        --topIndex;
     }
 
     T top() const
@@ -52,7 +99,7 @@ public:
         {
             throw underflow_error("Stack is empty");
         }
-        return data[topIndex];
+        return stack[topIndex];
     }
 
     bool isEmpty() const
@@ -69,87 +116,9 @@ public:
     {
         return topIndex + 1;
     }
+
+    int getCapacity() const
+    {
+        return capacity;
+    }
 };
-
-void testStack()
-{
-    cout << "Running Stack Tests...\n";
-
-    try
-    {
-        Stack<int> s(3);
-
-        // Test 1: Empty stack
-        if (!s.isEmpty())
-        {
-           cout << "Test Failed: Stack should be empty\n";
-            return;
-        }
-
-        // Test 2: Push elements
-        s.push(10);
-        s.push(20);
-        s.push(30);
-
-        if (s.size() != 3 || s.top() != 30)
-        {
-            cout << "Test Failed: Push or Top incorrect\n";
-            return;
-        }
-
-        
-        try
-        {
-            s.push(40);
-            cout << "Test Failed: Overflow not detected\n";
-            return;
-        }
-        catch (const overflow_error &)
-        {
-           cout << "Overflow test passed\n";
-        }
-
-        // Test 4: Pop elements
-        if (s.pop() != 30 || s.pop() != 20 || s.pop() != 10)
-        {
-           cout << "Test Failed: Pop incorrect\n";
-            return;
-        }
-
-        // Test 5: Underflow
-        try
-        {
-            s.pop();
-            cout << "Test Failed: Underflow not detected\n";
-            return;
-        }
-        catch (const underflow_error &)
-        {
-            cout << "Underflow test passed\n";
-        }
-
-        // Test 6: Top on empty stack
-        try
-        {
-            s.top();
-           cout << "Test Failed: Top on empty stack not detected\n";
-            return;
-        }
-        catch (const underflow_error &)
-        {
-            cout << "Top-on-empty test passed\n";
-        }
-
-        cout << "All Stack tests passed successfully.\n";
-    }
-    catch (const exception &e)
-    {
-        cout << "Unexpected error: " << e.what() << "\n";
-    }
-}
-
-int main()
-{
-    testStack();
-    return 0;
-}
