@@ -29,6 +29,7 @@ public:
             if (st.empty())
             {
                 st.push(i);
+                continue;
             }
             while (!st.empty() && temperatures[st.top()] < temperatures[i])
             {
