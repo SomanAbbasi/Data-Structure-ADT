@@ -14,8 +14,79 @@ using namespace std;
 https://leetcode.com/problems/maximum-and-minimum-sums-of-at-most-size-k-subarrays/description/
 
 
-
 */
+
+class Solution {
+public:
+using ll = long long int;
+    long long minMaxSubarraySum(vector<int>& nums, int k) {
+        int n = nums.size();
+        ll ans = 0;
+        {
+            vector<int> psi(n,-1),nsi(n,n);
+            stack<int> st;
+
+            for(int i=0;i<n;i++) {
+                while(st.size() and nums[st.top()]>=nums[i]) {
+                    nsi[st.top()]=i;
+                    st.pop();
+                }
+
+                if(st.size())
+                psi[i] = st.top();
+
+                st.push(i);
+            }
+
+            for(int i=0;i<n;i++) {
+                ll l = max(psi[i],i-k);
+                ll r = min(nsi[i],i+k);
+
+                ll mnd = min(i-l,r-i);
+                ll mxd = max(i-l,r-i);
+
+                ans+=mnd*(mnd+1)/2*nums[i];
+                ans+=(min(mnd+mxd-1,1LL*k)-mnd)*mnd*nums[i];
+                ll diff = min(mnd+mxd-1,1LL*k)-mxd;
+                ans-=diff*(diff+1)/2*nums[i];
+            }
+        }
+
+        
+        {
+            vector<int> pgi(n,-1),ngi(n,n);
+            stack<int> st;
+
+            for(int i=0;i<n;i++) {
+                while(st.size() and nums[st.top()]<=nums[i]) {
+                    ngi[st.top()]=i;
+                    st.pop();
+                }
+
+                if(st.size())
+                pgi[i] = st.top();
+
+                st.push(i);
+            }
+
+            for(int i=0;i<n;i++) {
+                ll l = max(pgi[i],i-k);
+                ll r = min(ngi[i],i+k);
+
+                ll mnd = min(i-l,r-i);
+                ll mxd = max(i-l,r-i);
+
+                ans+=mnd*(mnd+1)/2*nums[i];
+                ans+=(min(mnd+mxd-1,1LL*k)-mnd)*mnd*nums[i];
+                ll diff = min(mnd+mxd-1,1LL*k)-mxd;
+                ans-=diff*(diff+1)/2*nums[i];
+            }
+        }
+        return ans;
+    }
+};
+
+
 
 class Solution
 {
