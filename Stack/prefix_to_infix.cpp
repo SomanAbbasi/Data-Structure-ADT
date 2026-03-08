@@ -9,20 +9,19 @@ using namespace std;
 
 /*
 
-Postfix to Infix
+Prefix to Infix
 
-https://www.geeksforgeeks.org/dsa/postfix-to-infix/
-
+https://www.geeksforgeeks.org/dsa/prefix-infix-conversion/
 */
 
 /*
 Methods:
-    =>Scan the postfix expression from left to right.
+    =>Scan the prefix expression from right to left.
     => For each character:
         => If it’s an operand, push it onto the stack.
         => If it’s an operator, pop the top two operands from the stack,
         combine them as (operand1 operator operand2), and push back.
-        Note: pop first gives operand2, pop second gives operand1.
+        Note: pop first gives operand1, pop second gives operand2.
     At the end, the stack will contain the full infix expression.
 */
 
@@ -31,34 +30,38 @@ bool isOperator(char c)
     return (c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
 }
 
-string postfixToInfix(string postfix)
+string prefixToInfix(string prefix)
 {
     stack<string> st;
 
-    for (char ch : postfix)
+    int n=prefix.size();
+
+    for (int i = n-1; i>=0; i--)
     {
-        if (isalnum(ch))
+        char ch=prefix[i];
+        if(isalnum(ch))
         {
-            st.push(string(1, ch));
+            st.push(string(1,ch));
         }
-        else if (isOperator(ch))
+        else if(isOperator(ch))
         {
-            // Pop two operands
-            string op2 = st.top();
+            string op1=st.top();
             st.pop();
-            string op1 = st.top();
+            string op2=st.top();
             st.pop();
-            string expr = "(" + op1 + ch + op2 + ")";
+            string expr="("+op1+ch+op2+")";
             st.push(expr);
+
         }
     }
+    
 
     return st.top();
 }
 
 int main()
 {
-    string postfix = "AB+C*";
-    cout << "Postfix: " << postfix << endl;
-    cout << "Infix: " << postfixToInfix(postfix) << endl;
+    string prefix = "*-A/BC-/AKL";
+    cout << "Prefix: " << prefix << endl;
+    cout << "Infix: " << prefixToInfix(prefix) << endl;
 }
