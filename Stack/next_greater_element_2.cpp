@@ -23,6 +23,7 @@ public:
         int n = nums.size();
         vector<int> res(n, -1);
         stack<int> st;
+    
 
         for (int i = 0; i < 2 * n; i++)
         {
