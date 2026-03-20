@@ -30,74 +30,82 @@ Full Condition:
 
 */
 
-class CircularQueue {
 
-private:
+/*
+
+https://leetcode.com/problems/design-circular-queue/description/
+*/
+class MyCircularQueue
+{
     int *arr;
     int front;
     int rear;
+    int size;
     int capacity;
 
 public:
-
-    CircularQueue(int size) {
-
-        capacity = size;
+    MyCircularQueue(int k)
+    {
+        capacity = k;
         arr = new int[capacity];
-        front = -1;
+        front = 0;
         rear = -1;
+        size = 0;
     }
 
-    bool isEmpty() {
-        return front == -1;
+    bool enQueue(int value)
+    {
+        if (isFull())
+            return false;
+
+        rear = (rear+1) % capacity;
+        arr[rear] = value;
+        size++;
+        return true;
     }
 
-    bool isFull() {
-        return (rear + 1) % capacity == front;
+    bool deQueue()
+    {
+        if (isEmpty())
+            return false;
+
+        front = (front + 1) % capacity;
+
+        size--;
+
+        return true;
     }
 
-    void enqueue(int x) {
-
-        if (isFull()) {
-            cout << "Queue Full\n";
-            return;
-        }
-
-        if (isEmpty()) {
-            front = rear = 0;
-        }
-        else {
-            rear = (rear + 1) % capacity;
-        }
-
-        arr[rear] = x;
-    }
-
-    int dequeue() {
-
-        if (isEmpty()) {
-            cout << "Queue Empty\n";
-            return -1;
-        }
-
-        int val = arr[front];
-
-        if (front == rear) {
-            front = rear = -1;
-        }
-        else {
-            front = (front + 1) % capacity;
-        }
-
-        return val;
-    }
-
-    int getFront() {
-
+    int Front()
+    {
         if (isEmpty())
             return -1;
-
         return arr[front];
+    }
+    int Rear()
+    {
+         if (isEmpty())
+            return -1;
+        return arr[rear];
+
+    }
+
+    bool isEmpty()
+    {
+        if(size==0)
+            return true;
+        return false;
+    }
+
+    bool isFull()
+    {
+        if(size==capacity)
+            return true;
+        return false;
+    }
+
+    ~MyCircularQueue() {
+        delete[] arr;
     }
 };
 
