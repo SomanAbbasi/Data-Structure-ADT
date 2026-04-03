@@ -22,75 +22,157 @@ Now we can insert more.
 */
 
 
-class ShiftedQueue {
 
+/*
+
+ADT of shifted Queue
+
+
+*/
+
+class ShiftedQueue
+{
 private:
     int *arr;
     int front;
     int rear;
     int capacity;
 
-public:
+    // Resize function
+    void resize()
+    {
+        int newCapacity = capacity * 2;
+        int *newArr = new int[newCapacity];
 
-    ShiftedQueue(int size) {
+        // Copy valid elements
+        int size = rear - front + 1;
+        for (int i = 0; i < size; i++)
+        {
+            newArr[i] = arr[front + i];
+        }
+
+        // Reset pointers
+        front = 0;
+        rear = size - 1;
+
+        // Replace old array
+        delete[] arr;
+        arr = newArr;
+        capacity = newCapacity;
+    }
+
+    // shift all elements to left
+    void helper()
+    {
+
+        int size = rear - front + 1;
+        for (int i = 0; i < size; i++)
+        {
+            arr[i] = arr[front + i];
+        }
+        front = 0;
+        rear = size - 1;
+    }
+
+public:
+    ShiftedQueue(int size = 4)
+    {
         capacity = size;
         arr = new int[capacity];
-        front = -1;
+        front = 0;
         rear = -1;
     }
 
-    bool isEmpty() {
-        return front == -1 || front > rear;
+    ~ShiftedQueue()
+    {
+        delete[] arr;
     }
 
-    bool isFull() {
-        return rear == capacity - 1;
+    bool isEmpty()
+    {
+        return (rear < front);
     }
 
-    // Shift elements
-    void shiftElements() {
-
-        int j = 0;
-
-        for (int i = front; i <= rear; i++)
-            arr[j++] = arr[i];
-
-        rear = rear - front;
-        front = 0;
+    bool isFull()
+    {
+        return (rear == capacity - 1);
     }
 
-    void enqueue(int x) {
-
-        if (isFull()) {
-
+    void enqueue(int x)
+    {
+        if (isFull())
+        {
             if (front > 0)
-                shiftElements();
-            else {
-                cout << "Queue Full\n";
-                return;
+            {
+                helper();
+            }
+            else
+            {
+                resize();
             }
         }
-
-        if (front == -1)
-            front = 0;
-
-        arr[++rear] = x;
+        rear++;
+        arr[rear] = x;
     }
 
-    int dequeue() {
-
-        if (isEmpty()) {
-            cout << "Queue Empty\n";
-            return -1;
+    void dequeue()
+    {
+        if (isEmpty())
+        {
+            cout << "Queue Underflow\n";
+            return;
         }
 
-        return arr[front++];
+        front++;
+    }
+
+    int getFront()
+    {
+        if (isEmpty())
+            return -1;
+        return arr[front];
+    }
+
+    int getRear()
+    {
+        if (isEmpty())
+            return -1;
+        return arr[rear];
+    }
+
+    void display()
+    {
+        if (isEmpty())
+        {
+            cout << "Queue is empty\n";
+            return;
+        }
+        for (int i = front; i <= rear; i++)
+        {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
     }
 };
 
-
-
 int main()
 {
+    ShiftedQueue q(3);
 
+    q.enqueue(1);
+    q.enqueue(2);
+    q.enqueue(3);
+
+    q.enqueue(4);
+
+    q.display();
+
+    q.dequeue();
+    q.dequeue();
+
+    q.enqueue(5);
+    q.enqueue(6);
+
+    q.display();
 }
+      
