@@ -10,61 +10,87 @@ https://leetcode.com/problems/design-circular-deque/submissions/1953851483/
 
 class MyCircularDeque
 {
-
     int *arr;
+    int capacity;
     int front;
     int rear;
-    int size;
-    int capacity;
 
 public:
     MyCircularDeque(int k)
     {
         capacity = k;
-        arr = new int[capacity];
-        front = 0;
-        rear = k-1;
-        size = 0;
+        arr = new int[k];
+        front = -1;
+        rear = -1;
     }
 
     bool insertFront(int value)
     {
-        if(isFull())
+        if (isFull())
             return false;
-        
-        front=(front-1+capacity)%capacity;
-        arr[front]=value;
-        size++;
+        if (isEmpty())
+        {
+            front = 0;
+            rear = 0;
+        }
+        else
+        {
+            front = (front - 1 + capacity) % capacity;
+        }
+        arr[front] = value;
+
         return true;
     }
 
     bool insertLast(int value)
     {
-        if(isFull())
+        if (isFull())
             return false;
-        rear=(rear+1)%capacity;
-        arr[rear]=value;
-        size++;
+        if (isEmpty())
+        {
+            front = 0;
+            rear = 0;
+        }
+        else
+        {
+            rear = (rear + 1) % capacity;
+        }
+        arr[rear] = value;
         return true;
     }
 
     bool deleteFront()
     {
-        if(isEmpty())
+        if (isEmpty())
             return false;
-        front=(front+1)%capacity;
-        size--;
+
+        if (front == rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+        else
+        {
+            front = (front + 1) % capacity;
+        }
         return true;
     }
 
     bool deleteLast()
     {
-        if(isEmpty())
+        if (isEmpty())
             return false;
-        rear=(rear-1+capacity)%capacity;
-        size--;
 
-    return true;
+        if (front == rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+        else
+        {
+            rear = (rear - 1 + capacity) % capacity;
+        }
+        return true;
     }
 
     int getFront()
@@ -78,20 +104,29 @@ public:
     {
         if (isEmpty())
             return -1;
+
         return arr[rear];
     }
 
+    int size()
+    {
+        if(isEmpty()) return 0;
+        if(rear>=front)
+        {
+            return rear-front+1;
+        }
+        else{
+            return capacity-front+rear+1;
+        }
+    }
     bool isEmpty()
     {
-        if (size == 0)
-            return true;
-        return false;
+        return front==-1;
     }
 
     bool isFull()
     {
-        if (size == capacity)
-            return true;
-        return false;
+        return ((rear+1)%capacity)==front;
+        
     }
 };
