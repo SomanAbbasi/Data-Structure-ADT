@@ -103,6 +103,11 @@ public:
             return true;
         return false;
     }
+    int size() {
+    if (isEmpty()) return 0;             // Case 1: empty
+    if (rear >= front) return rear - front + 1; // Case 2: contiguous
+    return capacity - front + rear + 1;  // Case 3: wrapped
+}
 
     ~MyCircularQueue() {
         delete[] arr;
