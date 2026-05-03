@@ -32,11 +32,39 @@ public:
             return nullptr;
         convertBST(root->right); // larger value;
 
-        totalSum+=root->val; // sum it
-        root->val=totalSum; // update node 
+        totalSum += root->val; // sum it
+        root->val = totalSum;  // update node
 
-        convertBST(root->left);  // smaller val
+        convertBST(root->left); // smaller val
 
         return root;
     }
 };
+
+/*
+Iterrative approach
+class Solution {
+public:
+    TreeNode* convertBST(TreeNode* root) {
+        stack<TreeNode*> st;
+        TreeNode* curr = root;
+        int sum = 0;
+
+        while (curr || !st.empty()) {
+            while (curr) {
+                st.push(curr);
+                curr = curr->right; // go right first
+            }
+
+            curr = st.top(); st.pop();
+
+            sum += curr->val;
+            curr->val = sum;
+
+            curr = curr->left;
+        }
+
+        return root;
+    }
+};
+*/
