@@ -95,7 +95,7 @@ Node *searchNode(Node *root, int value)
     {
         return searchNode(root->right, value);
     }
-    // value is smaller than traverse right
+    // value is smaller than traverse left
     return searchNode(root->left, value);
 }
 
@@ -175,7 +175,7 @@ Node *deleteNode(Node *root, int data)
         }
 
         // node with two children: Get the inorder Predecessor
-        // (smallest in the right subtree)
+        //  (largest in left subtree)
 
         Node *temp = maxValueNode(root->left);
         // Copy the inorder Predecessor's content to this node
