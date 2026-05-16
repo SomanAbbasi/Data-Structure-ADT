@@ -35,7 +35,7 @@ Node *insertNode(Node *root, int data)
     {
         root->left = insertNode(root->left, data);
     }
-    else
+    else if (data > root->data)
     {
         root->right = insertNode(root->right, data);
     }
@@ -52,6 +52,17 @@ Left → Root → Right (LNR).
 
 */
 
+void preorderTraversal(Node *root)
+{
+    if (root)
+    {
+        cout << root->data << " ";
+
+        preorderTraversal(root->left);
+        preorderTraversal(root->right);
+    }
+}
+
 void inorderTraversal(Node *root)
 {
     if (root)
@@ -62,6 +73,15 @@ void inorderTraversal(Node *root)
     }
 }
 
+void postorderTraversal(Node *root)
+{
+    if (root)
+    {
+        postorderTraversal(root->left);
+        postorderTraversal(root->right);
+        cout << root->data << " ";
+    }
+}
 // search a given value in a given BST
 Node *searchNode(Node *root, int value)
 {
@@ -91,6 +111,19 @@ Node *minValueNode(Node *node)
     return current;
 }
 
+Node* maxValueNode(Node* node)
+{
+    Node* current=node;
+
+    // move to rightmost node
+    while(current && current->right!=nullptr)
+    {
+        current=current->right;
+    }
+
+    return current;
+}
+
 // deleteNode
 
 /*
@@ -103,9 +136,9 @@ Steps:
 => If a target node has 1 child,
 replace the target node with its child node and delete the target node.
 => If a target node has 2 children
-Find the target node's inorder successor.
-Replace the target node with successor.
-Delete the inorder successor.
+Find the target node's inorder successor or Predecessor.
+Replace the target node with successor or Predecessor.
+Delete the inorder successor or Predecessor.
 */
 Node *deleteNode(Node *root, int data)
 {
@@ -141,16 +174,16 @@ Node *deleteNode(Node *root, int data)
             return temp;
         }
 
-        // node with two children: Get the inorder successor
+        // node with two children: Get the inorder Predecessor
         // (smallest in the right subtree)
 
-        Node *temp = minValueNode(root->right);
-        // Copy the inorder successor's content to this node
+        Node *temp = maxValueNode(root->left);
+        // Copy the inorder Predecessor's content to this node
         root->data = temp->data;
 
-        // Delete the inorder successor
+        // Delete the inorder Predecessor
 
-        root->right = deleteNode(root->right, temp->data);
+        root->left = deleteNode(root->left, temp->data);
     }
     return root;
 }
